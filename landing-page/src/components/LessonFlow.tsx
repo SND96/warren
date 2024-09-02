@@ -30,7 +30,7 @@ const LessonFlow: React.FC<{ startingWarren: string }> = ({ startingWarren }) =>
           position: { x: 50, y: 50 }, 
           data: { 
             title: startingWarren,
-            onAdd: () => {} // This will be replaced when the component mounts
+            onAdd: () => {} 
           } 
         },
       ];
@@ -99,7 +99,6 @@ const LessonFlow: React.FC<{ startingWarren: string }> = ({ startingWarren }) =>
         nodeTypes={nodeTypes}
         fitView
       >
-        <Background />
         <Controls />
       </ReactFlow>
     </div>

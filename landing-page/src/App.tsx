@@ -23,7 +23,7 @@ const App: React.FC = () => {
      placeholder="What's your next Warren?"
      className="large-input"
    />
-    <button onClick={handleEnter} className="enter-button">Enter</button>
+    <button onClick={handleEnter} className="enter-button">Start Burrowing!</button>
 
       </div>
       {showLessonFlow && <LessonFlow startingWarren={nextWarren} />}
