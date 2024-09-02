@@ -14,6 +14,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 
 import LessonNode from './LessonNode';
+import axios from 'axios';
 
 const nodeTypes = {
   lessonNode: LessonNode,
@@ -21,8 +22,7 @@ const nodeTypes = {
 
 const initialEdges: Edge[] = [];
 
-const LessonFlow: React.FC<{ startingWarren: string }> = ({ startingWarren }) => {
-
+const LessonFlow: React.FC<{ startingWarren: string, answer: string }> = ({ startingWarren, answer }) => {
     const initialNodes: Node[] = [
         { 
           id: '1', 
@@ -30,6 +30,7 @@ const LessonFlow: React.FC<{ startingWarren: string }> = ({ startingWarren }) =>
           position: { x: 50, y: 50 }, 
           data: { 
             title: startingWarren,
+            answer: answer,
             onAdd: () => {} 
           } 
         },
@@ -39,41 +40,49 @@ const LessonFlow: React.FC<{ startingWarren: string }> = ({ startingWarren }) =>
 
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
-  const handleAddNode = useCallback((parentId: string, title: string) => {
-    setNodes((prevNodes) => {
-      const newNodeId = (prevNodes.length + 1).toString();
-      const parentNode = prevNodes.find(node => node.id === parentId);
-      
-      if (!parentNode) return prevNodes;
+  const handleAddNode = useCallback(async (parentId: string, title: string, answer: string) => {
+    try {
+      const response = await axios.post('http://localhost:5001/api/answer', { question: title });
+      const newAnswer = response.data.answer;
 
-      const newNodePosition: XYPosition = {
-        x: parentNode.position.x + 150,
-        y: parentNode.position.y + 100, 
-      };
+      setNodes((prevNodes) => {
+        const newNodeId = (prevNodes.length + 1).toString();
+        const parentNode = prevNodes.find(node => node.id === parentId);
+        
+        if (!parentNode) return prevNodes;
 
-      const newNode: Node = {
-        id: newNodeId,
-        type: 'lessonNode',
-        position: newNodePosition,
-        data: { 
-          title: title || `Lesson ${newNodeId}`, // Use the provided title or fallback
-          onAdd: (text: string) => handleAddNode(newNodeId, text),
-        },
-      };
+        const newNodePosition: XYPosition = {
+          x: parentNode.position.x + 150,
+          y: parentNode.position.y + 100, 
+        };
 
-      setEdges((eds) => [
-        ...eds,
-        {
-          id: `e${parentId}-${newNodeId}`,
-          source: parentId,
-          target: newNodeId,
-          type: 'smoothstep', 
-          markerEnd: { type: MarkerType.ArrowClosed },
-        },
-      ]);
+        const newNode: Node = {
+          id: newNodeId,
+          type: 'lessonNode',
+          position: newNodePosition,
+          data: { 
+            title: title || `Lesson ${newNodeId}`,
+            answer: newAnswer,
+            onAdd: (text: string) => handleAddNode(newNodeId, text, newAnswer),
+          },
+        };
 
-      return [...prevNodes, newNode];
-    });
+        setEdges((eds) => [
+          ...eds,
+          {
+            id: `e${parentId}-${newNodeId}`,
+            source: parentId,
+            target: newNodeId,
+            type: 'smoothstep', 
+            markerEnd: { type: MarkerType.ArrowClosed },
+          },
+        ]);
+
+        return [...prevNodes, newNode];
+      });
+    } catch (error) {
+      console.error('Error fetching answer:', error);
+    }
   }, [setNodes, setEdges]);
 
   React.useEffect(() => {
@@ -82,7 +91,7 @@ const LessonFlow: React.FC<{ startingWarren: string }> = ({ startingWarren }) =>
         ...node,
         data: {
           ...node.data,
-          onAdd: (text: string) => handleAddNode(node.id, text),
+          onAdd: (text: string) => handleAddNode(node.id, text, node.data.answer),
         },
       }))
     );

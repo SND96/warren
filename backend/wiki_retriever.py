@@ -3,6 +3,7 @@ from anthropic import Anthropic
 import wikipedia
 from dotenv import load_dotenv
 import sqlite3
+from datetime import datetime
 
 
 load_dotenv('.env')
@@ -52,7 +53,7 @@ def save_to_database(title, article, branch_topics):
     conn.commit()
     conn.close()
 
-def get_from_database(title):
+def get_from_database(title,branch_topics):
     print(f"Getting from database: {title}")
     conn = sqlite3.connect('local_wiki_database.db')
     cursor = conn.cursor()
@@ -65,16 +66,17 @@ def get_from_database(title):
 # %%
 def answer_question_mult(question, branch_topics =  []):
 
-    system_prompt = """
+    system_prompt = f"""
     You will be asked a question by the user. 
     If answering the question requires data you were not trained on, you can use the get_article tool to get the contents of a recent wikipedia article about the topic. 
     If you can answer the question without needing to get more information, please do so. 
+    The current date is {datetime.now()}.
     Only call the tool when needed. 
-    When you can answer the question, answer like you are a teacher and the user is a student and enclose it in <answer> tags
+    When you can answer the question, answer like you are a teacher and the user is a student but only a few sentences. Enclose the answer in <answer> tags
     """
     prompt = f"""
     Answer the following question <question>{question}</question>
-    When you can answer the question, answer like you are a teacher and the user is a student and enclose it in <answer> tags
+    When you can answer the question, answer like you are a teacher and the user is a student but only a few sentences. Enclose the answer in <answer> tags
     """
 
     messages = [{"role": "user", "content": prompt}]
@@ -134,10 +136,9 @@ def answer_question_mult(question, branch_topics =  []):
 
 
 # %%
-print("Starting")
-print(answer_question_mult("Who won best actor in the 2024 Oscars?"))
- # %%
+if __name__ == '__main__':
+    print(answer_question_mult("Who is Lebron James?"))
 
-print(tool_response)
+ # %%
 
 # %%
