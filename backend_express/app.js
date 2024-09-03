@@ -4,7 +4,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 const app = express();
-const port = 5001;
+const port = process.env.PORT || 5001;
 
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -20,7 +20,7 @@ app.post('/api/answer', (req, res) => {
   }
 
   const pythonProcess = spawn('python', [
-    path.join(__dirname, '..', 'backend_express', 'wiki_retriever_express.py'),
+    path.join(__dirname, 'wiki_retriever_express.py'),
     question
   ]);
 
@@ -48,5 +48,5 @@ app.post('/api/answer', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Express server running on http://localhost:${port}`);
+  console.log(`Express server running on port ${port}`);
 });

@@ -1,0 +1,5 @@
+build:
+  config:
+    PROJECT_PATH: backend_express
+run:
+  web: npm start --prefix backend_express
