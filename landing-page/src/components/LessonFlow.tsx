@@ -42,8 +42,11 @@ const LessonFlow: React.FC<{ startingWarren: string, answer: string }> = ({ star
 
   const handleAddNode = useCallback(async (parentId: string, title: string, answer: string) => {
     try {
+
       const response = await axios.post('http://localhost:5001/api/answer', { question: title });
       const newAnswer = response.data.answer;
+      console.log("Adding node with title:", title);
+      console.log("Adding node with answer:", answer);
 
       setNodes((prevNodes) => {
         const newNodeId = (prevNodes.length + 1).toString();
