@@ -12,12 +12,12 @@ app.get('/', (req, res) => {
 
 
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'https://warren-six.vercel.app/',
+    origin: 'https://warren-six.vercel.app/',
     credentials: true
   }));
 app.use(express.json());
 
-app.post('/api/answer', (req, res) => {
+app.post('api/answer', (req, res) => {
   console.log("get_answer called");
   const { question } = req.body;
   if (!question) {
