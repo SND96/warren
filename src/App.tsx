@@ -17,7 +17,7 @@ const App: React.FC = () => {
         console.log('Fetching answer...');
         console.log(nextWarren);
         const API_URL = process.env.REACT_APP_API_URL || 'https://rabbit-warren-f52348ca9b76.herokuapp.com';
-        const response = await axios.post(`${API_URL}api/answer`, { question: nextWarren });
+        const response = await axios.post(`${API_URL}/api/answer`, { question: nextWarren });
         console.log(response.data.answer);
         setAnswer(response.data.answer);
         setShowLessonFlow(true);
