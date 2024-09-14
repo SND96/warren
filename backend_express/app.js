@@ -7,11 +7,12 @@ const app = express();
 const port = process.env.PORT || 5001;
 
 app.get('/', (req, res) => {
-  res.send('Server is running');
+  res.json({ status: 'API is running' });
 });
 
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL || 'https://warren-six.vercel.app/',
     credentials: true
   }));
 app.use(express.json());
