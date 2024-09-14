@@ -10,14 +10,28 @@ app.get('/', (req, res) => {
   res.json({ status: 'API is running' });
 });
 
+app.options('*', cors()); // Handle preflight requests
+
+
+const allowedOrigins = [
+  'https://warren-six.vercel.app',
+  'https://warren-six.vercel.app/'
+];
 
 app.use(cors({
-    origin: 'https://warren-six.vercel.app/',
-    credentials: true
-  }));
-app.use(express.json());
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      var msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
 
-app.post('api/answer', (req, res) => {
+
+app.post('/api/answer', cors(),(req, res) => {
   console.log("get_answer called");
   const { question } = req.body;
   if (!question) {
