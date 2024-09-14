@@ -6,6 +6,10 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 5001;
 
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
+
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true
