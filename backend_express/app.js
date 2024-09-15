@@ -33,8 +33,7 @@ app.use(cors({
 }));
 
 
-app.post('/api/answer', cors(),(req, res) => {
-  console.log(req)
+app.post('/api/answer', cors(), (req, res) => {
   console.log("get_answer called");
   const { question } = req.body;
   if (!question) {
@@ -47,24 +46,23 @@ app.post('/api/answer', cors(),(req, res) => {
   ]);
 
   let result = '';
-  let responseSent = false;
+  let errorOutput = '';
 
   pythonProcess.stdout.on('data', (data) => {
     result += data.toString();
   });
 
   pythonProcess.stderr.on('data', (data) => {
+    errorOutput += data.toString();
     console.error(`Python Error: ${data}`);
   });
 
   pythonProcess.on('close', (code) => {
-    if (responseSent) return;
-    
     if (code !== 0) {
-      responseSent = true;
-      return res.status(500).json({ error: 'Python script execution failed' });
+      console.error(`Python script exited with code ${code}`);
+      console.error(`Error output: ${errorOutput}`);
+      return res.status(500).json({ error: 'Python script execution failed', details: errorOutput });
     }
-    responseSent = true;
     res.json({ answer: result.trim() });
   });
 });
