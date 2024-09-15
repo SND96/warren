@@ -7,7 +7,7 @@ import sqlite3
 from datetime import datetime
 
 
-load_dotenv('.env')
+load_dotenv('.api_env')
 client = Anthropic()
 
 # %%
