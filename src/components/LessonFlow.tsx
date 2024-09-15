@@ -42,8 +42,8 @@ const LessonFlow: React.FC<{ startingWarren: string, answer: string }> = ({ star
 
   const handleAddNode = useCallback(async (parentId: string, title: string, answer: string) => {
     try {
-
-      const response = await axios.post('http://localhost:5001/api/answer', { question: title });
+      const API_URL = process.env.REACT_APP_API_URL || 'https://rabbit-warren-f52348ca9b76.herokuapp.com';
+      const response = await axios.post(`${API_URL}api/answer`, { question: title });
       const newAnswer = response.data.answer;
       console.log("Adding node with title:", title);
       console.log("Adding node with answer:", answer);
