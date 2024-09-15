@@ -10,12 +10,14 @@ app.get('/', (req, res) => {
   res.json({ status: 'API is running' });
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.options('*', cors()); // Handle preflight requests
 
 
 const allowedOrigins = [
   'https://warren-six.vercel.app',
-  'https://warren-six.vercel.app/'
 ];
 
 app.use(cors({
@@ -32,6 +34,7 @@ app.use(cors({
 
 
 app.post('/api/answer', cors(),(req, res) => {
+  console.log(req)
   console.log("get_answer called");
   const { question } = req.body;
   if (!question) {
