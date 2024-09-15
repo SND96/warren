@@ -73,12 +73,10 @@ def answer_question_mult(question, branch_topics =  []):
     If you can answer the question without needing to get more information, please do so. 
     The current date is {datetime.now()}.
     Only call the tool when needed. 
-    When you can answer the question, answer like you are a teacher and the user is a student but only a few sentences. Make sure to enclose the answer in <answer> tags.
-    """
+    When you can answer the question, answer like you are a teacher and the user is a student but only a few sentences. Make sure to enclose the answer in <answer> tags."""
     prompt = f"""
     Answer the following question <question>{question}</question>
-    When you can answer the question, answer like you are a teacher and the user is a student but only a few sentences. Make sure to enclose the answer in <answer> tags.
-    """
+    When you can answer the question, answer like you are a teacher and the user is a student but only a few sentences. Make sure to enclose the answer in <answer> tags."""
 
     messages = [{"role": "user", "content": prompt}]
 
