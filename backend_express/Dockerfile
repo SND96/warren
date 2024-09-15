@@ -1,7 +1,7 @@
-FROM continuumio/miniconda3
+FROM node:14
 
 # Set up the Node.js environment
-RUN conda install -c conda-forge nodejs=14
+# RUN conda install -c conda-forge nodejs=14
 
 WORKDIR /app
 
