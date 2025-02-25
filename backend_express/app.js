@@ -6,22 +6,17 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 5001;
 
-app.get('/', (req, res) => {
-  res.json({ status: 'API is running' });
-});
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.options('*', cors()); // Handle preflight requests
-
-
+// Define allowed origins
 const allowedOrigins = [
   'https://warren-six.vercel.app',
+  // Add your local development URL if needed
+  'http://localhost:3000'
 ];
 
-app.use(cors({
+// Configure CORS
+const corsOptions = {
   origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl requests)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) === -1) {
       var msg = 'The CORS policy for this site does not allow access from the specified Origin.';
@@ -29,11 +24,25 @@ app.use(cors({
     }
     return callback(null, true);
   },
-  credentials: true
-}));
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
 
+// Apply CORS middleware to all routes
+app.use(cors(corsOptions));
 
-app.post('/api/answer', cors(), (req, res) => {
+// Handle preflight requests
+app.options('*', cors(corsOptions));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+  res.json({ status: 'API is running' });
+});
+
+app.post('/api/answer', (req, res) => {
   console.log("get_answer called");
   const { question } = req.body;
   if (!question) {
